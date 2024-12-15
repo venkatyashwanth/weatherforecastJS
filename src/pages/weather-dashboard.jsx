@@ -1,11 +1,23 @@
 import UseGeolocation from '@/hooks/use-geolocation'
+import { useWeatherQuery } from '@/hooks/use-weather';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
-import { AlertTriangle, MapPin } from 'lucide-react';
+import { AlertTriangle, MapPin, RefreshCw } from 'lucide-react';
+import { WeatherSkeleton } from '@/components/loading-skeleton';
+import CurrentWeather from '@/components/current-weather';
 
 const WeatherDashboard = () => {
   const { coordinates, error: locationError, getLocation, isLoading: locationLoading } = UseGeolocation();
 
+  const weatherQuery = useWeatherQuery(coordinates);
+
+  const handleRefresh = () => {
+    getLocation();
+  }
+
+  if (locationLoading) {
+    return <WeatherSkeleton />
+  }
   if (locationError) {
     return (
       <Alert variant="destructive">
@@ -37,9 +49,27 @@ const WeatherDashboard = () => {
     )
   }
 
+  if (!weatherQuery.data) {
+    return <WeatherSkeleton />
+  }
+
+
+
   return (
-    <div>
-      <h1>this is test</h1>
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h1>this is test</h1>
+        <Button variant={'outline'}
+          size={"icon"}
+          onClick={handleRefresh}
+        >
+          <RefreshCw className={`h-4 w-4`} />
+        </Button>
+      </div>
+
+      <div>
+        <CurrentWeather data={weatherQuery.data}/>
+      </div>
     </div>
   )
 }
