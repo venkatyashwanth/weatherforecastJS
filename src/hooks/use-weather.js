@@ -14,3 +14,11 @@ export function useWeatherQuery(coordinates) {
         enabled: !!coordinates
     })
 }
+
+export function useReverseGeocodeQuery(coordinates){
+    return useQuery({
+        queryKey: WEATHER_KEYS.location(coordinates ?? { lat: 0, lon: 0 }),
+        queryFn: () => coordinates ? weatherAPI.reverseGeocode(coordinates) : null,
+        enabled: !!coordinates
+    })
+}

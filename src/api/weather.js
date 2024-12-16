@@ -24,6 +24,15 @@ class WeatherAPI {
         });
         return this.fetchData(url);
     }
+
+    async reverseGeocode({ lat, lon }){
+        const url = this.createUrl(`${API_CONFIG.GEO}/reverse`, {
+            lat: lat.toString(),
+            lon: lon.toString(),
+            limits: 1
+        })
+        return this.fetchData(url);
+    }
 }
 
 export const weatherAPI = new WeatherAPI();

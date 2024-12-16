@@ -1,5 +1,5 @@
 import UseGeolocation from '@/hooks/use-geolocation'
-import { useWeatherQuery } from '@/hooks/use-weather';
+import { useReverseGeocodeQuery, useWeatherQuery } from '@/hooks/use-weather';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { AlertTriangle, MapPin, RefreshCw } from 'lucide-react';
@@ -10,6 +10,8 @@ const WeatherDashboard = () => {
   const { coordinates, error: locationError, getLocation, isLoading: locationLoading } = UseGeolocation();
 
   const weatherQuery = useWeatherQuery(coordinates);
+  const locationQuery = useReverseGeocodeQuery(coordinates);
+
 
   const handleRefresh = () => {
     getLocation();
@@ -54,11 +56,11 @@ const WeatherDashboard = () => {
   }
 
 
-
+  const locationName = locationQuery.data?.[0];
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h1>this is test</h1>
+        <h1 className="text-xl font-bold tracking-tight">My Location</h1>
         <Button variant={'outline'}
           size={"icon"}
           onClick={handleRefresh}
@@ -68,7 +70,7 @@ const WeatherDashboard = () => {
       </div>
 
       <div>
-        <CurrentWeather data={weatherQuery.data}/>
+        <CurrentWeather data={weatherQuery.data} locationName={locationName} />
       </div>
     </div>
   )
